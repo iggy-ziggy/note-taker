@@ -15,6 +15,7 @@
 ## Description
 
 An app that allows you to type and save notes and reminders.
+
 Deployed on Heroku: https://notetaker987-f89918c4f730.herokuapp.com/notes
 
 ## Installation
