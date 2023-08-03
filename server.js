@@ -1,5 +1,7 @@
 const express = require('express');
+const fs = require('fs');
 const path = require('path');
+const uuid = require('./helpers/uuid'); // maybe?
 const noteData = require('./db/db.json');
 
 const PORT = process.env.port || 3001;
@@ -20,11 +22,33 @@ app.get('/notes', (req, res) => {
 });
 
 app.get('/api/notes', (req, res) => {
-    res.json(noteData);
+    readFromFile('./db/db.json').then((data) => res.json(JSON.parse(data)));
+    // res.json(noteData);
 });
 
 app.post('/api/notes', (req, res) => {
-    
+    const { title, text } = req.body;
+
+    if (title && text) {
+        const newNote = {
+            title,
+            text,
+            review_id: uuid(),
+        };
+
+        fs.readFile(noteData, 'utf8', (err, data) => {
+            if (err) {
+              console.error(err);
+            } else {
+              const parsedData = JSON.parse(data);
+              parsedData.push(newNote);
+              writeToFile(parsedData);
+            }
+          });
+        res.send('Note added!')
+    } else {
+        res.send('There was an error');
+    }
 });
 
 
